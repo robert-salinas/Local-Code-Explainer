@@ -1,4 +1,3 @@
-import pytest
 from typer.testing import CliRunner
 from explainer.cli import app
 from unittest.mock import patch

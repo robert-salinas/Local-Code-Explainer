@@ -1,7 +1,7 @@
 import json
 import hashlib
 import os
-from typing import Optional, Dict, Any
+from typing import Optional
 
 
 class ExplanationCache:

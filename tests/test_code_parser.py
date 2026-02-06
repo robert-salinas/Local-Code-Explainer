@@ -1,5 +1,3 @@
-import pytest
-import os
 from explainer.code_parser import CodeParser
 
 

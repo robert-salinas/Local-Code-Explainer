@@ -1,5 +1,4 @@
 import typer
-from typing import Optional
 from explainer.explainer import CodeExplainer
 from explainer.formatters import OutputFormatter
 import os

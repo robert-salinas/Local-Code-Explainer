@@ -1,7 +1,7 @@
 from explainer.code_parser import CodeParser
 from explainer.llm_handler import LLMHandler
 from explainer.cache import ExplanationCache
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 
 
 class CodeExplainer:

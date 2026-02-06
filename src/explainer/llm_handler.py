@@ -1,5 +1,5 @@
 import ollama
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 
 
 class LLMHandler:
@@ -16,7 +16,10 @@ class LLMHandler:
                 messages=[
                     {
                         "role": "system",
-                        "content": "Eres un experto ingeniero de software que explica código de forma clara y técnica.",
+                        "content": (
+                            "Eres un experto ingeniero de software que explica "
+                            "código de forma clara y técnica."
+                        ),
                     },
                     {"role": "user", "content": prompt},
                 ],
