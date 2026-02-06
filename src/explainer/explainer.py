@@ -4,14 +4,31 @@ from explainer.cache import ExplanationCache
 from typing import Dict, Any, Optional
 
 class CodeExplainer:
-    def __init__(self, model: str = "mistral", use_cache: bool = True):
+    """Clase principal que orquestra el análisis AST y la generación de explicaciones vía LLM."""
+
+    def __init__(self, model: str = "mistral", use_cache: bool = True) -> None:
+        """
+        Inicializa el explicador de código.
+
+        Args:
+            model: Nombre del modelo de Ollama a utilizar.
+            use_cache: Si se debe utilizar el sistema de caché local.
+        """
         self.parser = CodeParser()
         self.llm = LLMHandler(model=model)
         self.cache = ExplanationCache() if use_cache else None
         self.model = model
 
     def explain(self, file_path: str) -> Dict[str, Any]:
-        """Orquestra el proceso de análisis y explicación."""
+        """
+        Analiza un archivo de código y genera una explicación técnica detallada.
+
+        Args:
+            file_path: Ruta absoluta o relativa al archivo a analizar.
+
+        Returns:
+            Dict con el análisis estructural, la explicación del LLM y metadatos de caché.
+        """
         # 1. Parsear el código
         analysis = self.parser.parse_file(file_path)
         
