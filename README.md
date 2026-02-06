@@ -1,5 +1,5 @@
 # 🚀 Local Code Explainer (LCE) v0.1.0
-**Python Version** | **License: MIT**
+**Python Version** | 
 
 LCE es una herramienta de ingeniería diseñada para analizar y explicar código fuente de manera local, asegurando la privacidad absoluta de tu propiedad intelectual y proporcionando claridad técnica instantánea mediante LLMs locales.
 
