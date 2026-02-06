@@ -1,6 +1,15 @@
 import ast
 import os
-from typing import Dict, Any
+from typing import Dict, Any, List, TypedDict
+
+
+class PythonStats(TypedDict):
+    file_name: str
+    language: str
+    total_lines: int
+    functions: List[Dict[str, Any]]
+    classes: List[Dict[str, Any]]
+    imports: List[str]
 
 
 class CodeParser:
@@ -27,7 +36,7 @@ class CodeParser:
         try:
             tree = ast.parse(content)
 
-            stats = {
+            stats: PythonStats = {
                 "file_name": os.path.basename(file_path),
                 "language": "python",
                 "total_lines": len(content.splitlines()),
@@ -64,9 +73,10 @@ class CodeParser:
                         for n in node.names:
                             stats["imports"].append(n.name)
                     else:
-                        stats["imports"].append(node.module)
+                        if node.module:
+                            stats["imports"].append(node.module)
 
-            return stats
+            return dict(stats)
         except SyntaxError:
             return self._parse_generic(content, file_path)
 
