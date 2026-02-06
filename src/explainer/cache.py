@@ -3,6 +3,7 @@ import hashlib
 import os
 from typing import Optional, Dict, Any
 
+
 class ExplanationCache:
     def __init__(self, cache_dir: str = ".explainer_cache"):
         self.cache_dir = cache_dir
@@ -18,9 +19,9 @@ class ExplanationCache:
         """Recupera una explicación del caché si existe."""
         cache_key = self._get_hash(code, model)
         cache_path = os.path.join(self.cache_dir, f"{cache_key}.json")
-        
+
         if os.path.exists(cache_path):
-            with open(cache_path, 'r', encoding='utf-8') as f:
+            with open(cache_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
                 return data.get("explanation")
         return None
@@ -29,10 +30,18 @@ class ExplanationCache:
         """Guarda una explicación en el caché."""
         cache_key = self._get_hash(code, model)
         cache_path = os.path.join(self.cache_dir, f"{cache_key}.json")
-        
-        with open(cache_path, 'w', encoding='utf-8') as f:
-            json.dump({
-                "explanation": explanation,
-                "model": model,
-                "timestamp": os.path.getmtime(cache_path) if os.path.exists(cache_path) else 0 # Simple timestamp
-            }, f, indent=4)
+
+        with open(cache_path, "w", encoding="utf-8") as f:
+            json.dump(
+                {
+                    "explanation": explanation,
+                    "model": model,
+                    "timestamp": (
+                        os.path.getmtime(cache_path)
+                        if os.path.exists(cache_path)
+                        else 0
+                    ),  # Simple timestamp
+                },
+                f,
+                indent=4,
+            )

@@ -3,6 +3,7 @@ from explainer.llm_handler import LLMHandler
 from explainer.cache import ExplanationCache
 from typing import Dict, Any, Optional
 
+
 class CodeExplainer:
     """Clase principal que orquestra el análisis AST y la generación de explicaciones vía LLM."""
 
@@ -31,8 +32,8 @@ class CodeExplainer:
         """
         # 1. Parsear el código
         analysis = self.parser.parse_file(file_path)
-        
-        with open(file_path, 'r', encoding='utf-8') as f:
+
+        with open(file_path, "r", encoding="utf-8") as f:
             content = f.read()
 
         # 2. Verificar caché
@@ -42,7 +43,7 @@ class CodeExplainer:
                 return {
                     "analysis": analysis,
                     "explanation": cached_explanation,
-                    "cached": True
+                    "cached": True,
                 }
 
         # 3. Generar nueva explicación
@@ -52,8 +53,4 @@ class CodeExplainer:
         if self.cache:
             self.cache.set(content, self.model, explanation)
 
-        return {
-            "analysis": analysis,
-            "explanation": explanation,
-            "cached": False
-        }
+        return {"analysis": analysis, "explanation": explanation, "cached": False}

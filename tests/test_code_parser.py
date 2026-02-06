@@ -2,6 +2,7 @@ import pytest
 import os
 from explainer.code_parser import CodeParser
 
+
 def test_parse_python_file(tmp_path):
     # Crear un archivo temporal de prueba
     content = """
@@ -24,6 +25,7 @@ class Greeter:
     assert result["functions"][0]["name"] == "hello"
     assert len(result["classes"]) == 1
     assert result["classes"][0]["name"] == "Greeter"
+
 
 def test_parse_generic_file(tmp_path):
     content = "console.log('hello');"

@@ -5,6 +5,7 @@ from rich.table import Table
 import json
 from typing import Dict, Any
 
+
 class OutputFormatter:
     def __init__(self):
         self.console = Console()
@@ -16,7 +17,9 @@ class OutputFormatter:
         is_cached = result.get("cached", False)
 
         # Encabezado
-        self.console.print(f"\n[bold blue]📄 Archivo:[/bold blue] {analysis['file_name']}")
+        self.console.print(
+            f"\n[bold blue]📄 Archivo:[/bold blue] {analysis['file_name']}"
+        )
         if is_cached:
             self.console.print("[italic yellow](Obtenido del caché)[/italic yellow]")
 
@@ -24,12 +27,12 @@ class OutputFormatter:
         table = Table(title="🔍 Análisis Estructural")
         table.add_column("Métrica", style="cyan")
         table.add_column("Valor", style="magenta")
-        
+
         table.add_row("Lenguaje", analysis["language"])
         table.add_row("Líneas totales", str(analysis["total_lines"]))
         table.add_row("Funciones", str(len(analysis.get("functions", []))))
         table.add_row("Clases", str(len(analysis.get("classes", []))))
-        
+
         self.console.print(table)
 
         # Explicación IA
