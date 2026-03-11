@@ -1,0 +1,21 @@
+==================================================
+          RS DIGITAL | REPORTE DE CÓDIGO          
+==================================================
+Fecha: 2026-03-11 18:49:14
+Autor del Reporte: Robert Salinas
+--------------------------------------------------
+
+LENGUAJE: PYTHON
+LÍNEAS TOTALES: 35
+FUNCIONES: 0
+CLASES: 1
+
+--- ESTRUCTURA ---
+Clases:
+  - AppConfig
+
+Funciones:
+
+==================================================
+       Fin del Reporte - RS Local Code Explainer  
+==================================================

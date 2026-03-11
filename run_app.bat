@@ -24,6 +24,8 @@ if not exist ".venv" (
 ) else ( 
     echo [INFO] Entorno virtual encontrado. 
     call .venv\Scripts\activate 
+    :: Asegurar que las dependencias esten actualizadas incluso si el venv ya existe
+    pip install customtkinter >nul 2>&1
 ) 
 
 :: 2. Iniciar la aplicación 
