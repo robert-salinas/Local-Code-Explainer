@@ -1,0 +1,12 @@
+{
+    "gemini_api_key": "",
+    "enable_ai": false,
+    "theme": "dark",
+    "author_name": "Robert Salinas",
+    "font_size": 12,
+    "accent_color": "#FF7A3D",
+    "export_path": "C:\\Users\\Robert Esteban\\Desktop\\github proyects\\Local-Code-Explainer",
+    "auto_open_report": true,
+    "ignored_patterns": "__pycache__, .DS_Store, .venv, *.log, node_modules",
+    "strict_mode": false
+}

@@ -32,11 +32,9 @@ if not exist ".venv" (
 echo [INFO] Iniciando Local Code Explainer GUI... 
 start /b pythonw main.py 
 
-:: 3. (Opcional) Crear acceso directo en el escritorio si no existe 
-if not exist "%USERPROFILE%\Desktop\RS-LCE-Desktop.lnk" ( 
-    echo [INFO] Creando acceso directo en el Escritorio... 
-    powershell -ExecutionPolicy Bypass -File create_shortcut.ps1 
-) 
+:: 3. Crear o Actualizar acceso directo en el escritorio (para asegurar que el icono esté actualizado)
+echo [INFO] Actualizando acceso directo...
+powershell -ExecutionPolicy Bypass -File create_shortcut.ps1
 
 echo [OK] Aplicacion en ejecucion. 
 echo Puedes cerrar esta ventana. 

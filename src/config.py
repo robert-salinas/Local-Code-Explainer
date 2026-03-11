@@ -11,7 +11,12 @@ class AppConfig:
             "enable_ai": False,
             "theme": "dark",
             "author_name": "Robert Salinas",
-            "accent_color": "#FF7A3D"
+            "font_size": 12,
+            "accent_color": "#FF7A3D",
+            "export_path": os.getcwd(),
+            "auto_open_report": True,
+            "ignored_patterns": "__pycache__, .DS_Store, .venv, *.log, node_modules",
+            "strict_mode": False
         }
         self.load_config()
 

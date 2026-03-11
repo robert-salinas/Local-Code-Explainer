@@ -8,6 +8,125 @@ from explainer.code_parser import CodeParser
 ctk.set_appearance_mode("Dark")
 ctk.set_default_color_theme("dark-blue")  # Base oscura
 
+class ConfigPanel(ctk.CTkFrame):
+    def __init__(self, parent, config: AppConfig, on_close=None):
+        super().__init__(parent, fg_color="#1A1F2E")
+        self.config = config
+        self.on_close = on_close
+        
+        # Colores RS
+        self.rs_orange = "#FF7A3D"
+        self.rs_dark_primary = "#2D3142"
+        self.rs_text_white = "#FFFFFF"
+
+        self._create_ui()
+
+    def _create_ui(self):
+        # Título y Botón de Cierre
+        header_frame = ctk.CTkFrame(self, fg_color="transparent")
+        header_frame.pack(fill="x", padx=20, pady=(20, 10))
+        
+        ctk.CTkLabel(
+            header_frame, text="Configuración del Sistema", 
+            font=("Roboto", 24, "bold"), text_color=self.rs_orange
+        ).pack(side="left")
+
+        if self.on_close:
+            ctk.CTkButton(
+                header_frame, text="✕", width=30, height=30,
+                fg_color="transparent", hover_color="#374151",
+                text_color="white", font=("Arial", 16),
+                command=self.on_close
+            ).pack(side="right")
+
+        # Contenedor Scrolleable (Estilo Tarjeta Centrada)
+        scroll_frame = ctk.CTkScrollableFrame(self, fg_color=self.rs_dark_primary, corner_radius=15)
+        scroll_frame.pack(fill="both", expand=True, padx=40, pady=(0, 40))
+
+        # --- SECCIÓN GENERAL ---
+        ctk.CTkLabel(scroll_frame, text="General", font=("Roboto", 14, "bold"), text_color=self.rs_text_white).pack(anchor="w", padx=10, pady=(10, 5))
+        
+        # Autor
+        ctk.CTkLabel(scroll_frame, text="Nombre del Autor (Reportes)", font=("Roboto", 12)).pack(anchor="w", padx=20, pady=(5, 0))
+        self.author_entry = ctk.CTkEntry(scroll_frame, width=300, fg_color="#1A1F2E", border_color=self.rs_orange)
+        self.author_entry.insert(0, self.config.get("author_name", "Robert Salinas"))
+        self.author_entry.pack(padx=20, anchor="w", pady=(0, 10))
+
+        # Tamaño de Fuente
+        ctk.CTkLabel(scroll_frame, text="Tamaño de Fuente (Editor)", font=("Roboto", 12)).pack(anchor="w", padx=20, pady=(5, 0))
+        self.font_size_slider = ctk.CTkSlider(scroll_frame, from_=8, to=24, number_of_steps=16, button_color=self.rs_orange)
+        self.font_size_slider.set(self.config.get("font_size", 12))
+        self.font_size_slider.pack(padx=20, anchor="w", fill="x", pady=(0, 15))
+
+        # --- SECCIÓN ANÁLISIS ---
+        ctk.CTkLabel(scroll_frame, text="Análisis", font=("Roboto", 14, "bold"), text_color=self.rs_text_white).pack(anchor="w", padx=10, pady=(10, 5))
+
+        # Modo Estricto
+        self.strict_var = ctk.BooleanVar(value=self.config.get("strict_mode", False))
+        ctk.CTkSwitch(
+            scroll_frame, text="Modo Estricto (Penalizar más en Salud del Código)", 
+            variable=self.strict_var, progress_color=self.rs_orange, button_color="white"
+        ).pack(anchor="w", padx=20, pady=(5, 10))
+
+        # Archivos Ignorados
+        ctk.CTkLabel(scroll_frame, text="Archivos/Carpetas Ignorados", font=("Roboto", 12)).pack(anchor="w", padx=20, pady=(5, 0))
+        self.ignored_entry = ctk.CTkEntry(scroll_frame, width=400, fg_color="#1A1F2E", border_color=self.rs_orange)
+        default_ignored = "__pycache__, .DS_Store, .venv, *.log, node_modules"
+        self.ignored_entry.insert(0, self.config.get("ignored_patterns", default_ignored))
+        self.ignored_entry.pack(padx=20, anchor="w", pady=(0, 15))
+        
+        # --- SECCIÓN EXPORTACIÓN ---
+        ctk.CTkLabel(scroll_frame, text="Exportación", font=("Roboto", 14, "bold"), text_color=self.rs_text_white).pack(anchor="w", padx=10, pady=(10, 5))
+
+        # Ruta
+        ctk.CTkLabel(scroll_frame, text="Ruta de Exportación", font=("Roboto", 12)).pack(anchor="w", padx=20, pady=(5, 0))
+        path_frame = ctk.CTkFrame(scroll_frame, fg_color="transparent")
+        path_frame.pack(fill="x", padx=20, pady=(0, 10))
+        
+        self.export_path_entry = ctk.CTkEntry(path_frame, width=300, fg_color="#1A1F2E", border_color=self.rs_orange)
+        self.export_path_entry.insert(0, self.config.get("export_path", os.getcwd()))
+        self.export_path_entry.pack(side="left", padx=(0, 10), fill="x", expand=True)
+        
+        ctk.CTkButton(path_frame, text="📂", width=40, fg_color="#3B82F6", command=self._browse_path).pack(side="left")
+
+        # Auto-abrir
+        self.auto_open_var = ctk.BooleanVar(value=self.config.get("auto_open_report", True))
+        ctk.CTkCheckBox(
+            scroll_frame, text="Abrir reporte automáticamente al finalizar", 
+            variable=self.auto_open_var, fg_color=self.rs_orange, hover_color="#E86A2A"
+        ).pack(anchor="w", padx=20, pady=(5, 20))
+
+        # Botonera Inferior (Fuera del scroll)
+        btn_frame = ctk.CTkFrame(self, fg_color="transparent")
+        btn_frame.pack(pady=(0, 20))
+
+        ctk.CTkButton(
+            btn_frame, text="Guardar Cambios", 
+            fg_color=self.rs_orange, hover_color="#E86A2A",
+            font=("Roboto", 14, "bold"), height=40, width=200,
+            command=self._save_config
+        ).pack()
+
+    def _browse_path(self):
+        directory = ctk.filedialog.askdirectory()
+        if directory:
+            self.export_path_entry.delete(0, "end")
+            self.export_path_entry.insert(0, directory)
+
+    def _save_config(self):
+        # Guardar todo
+        self.config.set("author_name", self.author_entry.get())
+        self.config.set("font_size", int(self.font_size_slider.get()))
+        self.config.set("strict_mode", self.strict_var.get())
+        self.config.set("ignored_patterns", self.ignored_entry.get())
+        self.config.set("export_path", self.export_path_entry.get())
+        self.config.set("auto_open_report", self.auto_open_var.get())
+        
+        if self.on_close:
+            self.on_close()
+
+
+
 class RSLocalCodeExplainerApp(ctk.CTk):
     def __init__(self):
         super().__init__()
@@ -16,6 +135,19 @@ class RSLocalCodeExplainerApp(ctk.CTk):
         self.parser = CodeParser()
         self.last_analysis = ""  # Store analysis for exportw
         
+        # Icono (Si existe) y AppID para barra de tareas
+        try:
+            import ctypes
+            myappid = 'rs.localcodeexplainer.app.1.0' # Arbitrary string
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+        except Exception:
+            pass
+
+        icon_path = os.path.join(os.path.dirname(__file__), "web", "assets", "icon.ico")
+        if os.path.exists(icon_path):
+            self.iconbitmap(icon_path)
+
+
         # Colores RS
         self.rs_orange = self.config.get("accent_color", "#FF7A3D")
         self.rs_dark_primary = "#2D3142"
@@ -30,19 +162,79 @@ class RSLocalCodeExplainerApp(ctk.CTk):
         # Layout Grid Compacto
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
-        self.grid_rowconfigure(0, weight=0) # KPIs
-        self.grid_rowconfigure(1, weight=1) # Paneles
-        self.grid_rowconfigure(2, weight=0) # Botón
-        self.grid_rowconfigure(3, weight=0) # Footer
+        self.grid_rowconfigure(0, weight=0) # Header
+        self.grid_rowconfigure(1, weight=0) # KPIs
+        self.grid_rowconfigure(2, weight=1) # Paneles
+        self.grid_rowconfigure(3, weight=0) # Botón
+        self.grid_rowconfigure(4, weight=0) # Footer
 
+        self._create_header()
         self._create_kpi_bar()
         self._create_panels()
         self._create_action_bar()
         self._create_footer()
+        
+        # Inicializar panel de configuración (oculto)
+        self.config_panel = ConfigPanel(self, self.config, on_close=self.toggle_config)
+        self.config_panel.grid(row=0, column=0, columnspan=2, rowspan=4, sticky="nsew")
+        self.config_panel.grid_remove()
+
+    def _create_header(self):
+        header_frame = ctk.CTkFrame(self, fg_color="transparent")
+        header_frame.grid(row=0, column=0, columnspan=2, padx=20, pady=(10, 0), sticky="ew")
+        
+        # Título y Autor
+        title_frame = ctk.CTkFrame(header_frame, fg_color="transparent")
+        title_frame.pack(side="left")
+        
+        ctk.CTkLabel(
+            title_frame, text="Local Code Explainer", 
+            font=("Roboto", 24, "bold"), text_color=self.rs_orange
+        ).pack(anchor="w")
+        
+        author = self.config.get("author_name", "Robert Salinas")
+        self.header_author_label = ctk.CTkLabel(
+            title_frame, text=f"by {author}", font=("Roboto", 10), text_color="#9CA3AF"
+        )
+        self.header_author_label.pack(anchor="w", pady=(0, 0))
+        
+        # Botón Configuración
+        ctk.CTkButton(
+            header_frame, text="⚙ Configuración", width=120,
+            fg_color="#374151", hover_color="#4B5563",
+            command=self.toggle_config
+        ).pack(side="right", anchor="n", pady=5)
+
+    def toggle_config(self):
+        if self.config_panel.winfo_viewable():
+            self.config_panel.grid_remove()
+            self.refresh_ui_settings()
+        else:
+            self.config_panel.grid()
+            self.config_panel.lift()
+
+    def refresh_ui_settings(self):
+        """Actualiza la interfaz con la nueva configuración."""
+        author = self.config.get("author_name", "Robert Salinas")
+        
+        # Actualizar Header
+        if hasattr(self, 'header_author_label'):
+            self.header_author_label.configure(text=f"by {author}")
+
+        # Actualizar Footer
+        # (Ya no mostramos el autor en el footer, pero si existiera la referencia, la actualizamos o la ocultamos)
+        if hasattr(self, 'footer_author_label'):
+            self.footer_author_label.pack_forget() # Ocultar si existe
+            
+        # Actualizar Fuente del Editor
+        new_size = self.config.get("font_size", 12)
+        self.code_input.configure(font=("Consolas", new_size))
+
+
 
     def _create_kpi_bar(self):
         self.kpi_frame = ctk.CTkFrame(self, fg_color="transparent")
-        self.kpi_frame.grid(row=0, column=0, columnspan=2, padx=15, pady=(15, 5), sticky="ew")
+        self.kpi_frame.grid(row=1, column=0, columnspan=2, padx=15, pady=(15, 5), sticky="ew")
         self.kpi_frame.grid_columnconfigure((0, 1, 2), weight=1)
 
         # KPIs
@@ -65,7 +257,7 @@ class RSLocalCodeExplainerApp(ctk.CTk):
     def _create_panels(self):
         # Panel Izquierdo
         self.left_frame = ctk.CTkFrame(self, fg_color=self.rs_dark_primary, corner_radius=10)
-        self.left_frame.grid(row=1, column=0, padx=10, pady=5, sticky="nsew")
+        self.left_frame.grid(row=2, column=0, padx=10, pady=5, sticky="nsew")
         
         # Header Compacto Izquierda
         header_frame_l = ctk.CTkFrame(self.left_frame, fg_color="transparent")
@@ -82,7 +274,7 @@ class RSLocalCodeExplainerApp(ctk.CTk):
         self.lang_selector.pack(side="right")
 
         self.code_input = ctk.CTkTextbox(
-            self.left_frame, font=("Consolas", 12), fg_color=self.rs_dark_secondary,
+            self.left_frame, font=("Consolas", self.config.get("font_size", 12)), fg_color=self.rs_dark_secondary,
             text_color="#E0E0E0", border_width=0, corner_radius=6
         )
         self.code_input.pack(expand=True, fill="both", padx=5, pady=5)
@@ -90,7 +282,7 @@ class RSLocalCodeExplainerApp(ctk.CTk):
 
         # Panel Derecho (Acordeones)
         self.right_frame = ctk.CTkScrollableFrame(self, fg_color=self.rs_dark_primary, corner_radius=10, label_text="📊 ANÁLISIS TÉCNICO")
-        self.right_frame.grid(row=1, column=1, padx=10, pady=5, sticky="nsew")
+        self.right_frame.grid(row=2, column=1, padx=10, pady=5, sticky="nsew")
         self.right_frame._label.configure(font=("Roboto", 12, "bold"), text_color=self.rs_orange)
         
         # 1. Jerarquía
@@ -135,7 +327,7 @@ class RSLocalCodeExplainerApp(ctk.CTk):
 
     def _create_action_bar(self):
         action_frame = ctk.CTkFrame(self, fg_color="transparent")
-        action_frame.grid(row=2, column=0, columnspan=2, padx=20, pady=10, sticky="ew")
+        action_frame.grid(row=3, column=0, columnspan=2, padx=20, pady=10, sticky="ew")
         action_frame.grid_columnconfigure(0, weight=3)
         action_frame.grid_columnconfigure(1, weight=1)
 
@@ -154,10 +346,14 @@ class RSLocalCodeExplainerApp(ctk.CTk):
         self.export_btn.grid(row=0, column=1, sticky="ew")
 
     def _create_footer(self):
-        author = self.config.get("author_name", "Robert Salinas")
+        footer_frame = ctk.CTkFrame(self, fg_color="transparent")
+        footer_frame.grid(row=4, column=0, columnspan=2, pady=(0, 10))
+        
         ctk.CTkLabel(
-            self, text=f"RS Digital | {author}", font=("Roboto", 9), text_color="#6B7280"
-        ).grid(row=3, column=0, columnspan=2, pady=(0, 5))
+            footer_frame, text="", font=("Roboto", 10, "bold"), text_color="#6B7280"
+        ).pack()
+        
+        # El "by author" se movió al header, así que lo quitamos de aquí.
 
     def on_lang_change(self, choice):
         self.highlight_syntax()
@@ -203,6 +399,7 @@ class RSLocalCodeExplainerApp(ctk.CTk):
             # Puntuación de Salud (Score)
             score = 100
             quality_warnings = []
+            strict_mode = self.config.get("strict_mode", False)
             
             # 1. Jerarquía
             hierarchy_text = f"📦 Clases Detectadas ({len(stats['classes'])}):\n"
@@ -221,7 +418,7 @@ class RSLocalCodeExplainerApp(ctk.CTk):
             security_issues = []
             if "api_key" in code_text.lower() or "password" in code_text.lower():
                 security_issues.append("Posibles credenciales expuestas (api_key/password)")
-                score -= 10
+                score -= 20 if strict_mode else 10
             
             security_text = "✅ No se detectaron patrones obvios de riesgo."
             if security_issues:
@@ -234,6 +431,9 @@ class RSLocalCodeExplainerApp(ctk.CTk):
             # Penalización por funciones largas (si el parser lo soporta)
             
             quality_text = f"💚 Puntuación de Salud: {score}/100\n\n"
+            if strict_mode:
+                quality_text += "🔴 Modo Estricto Activado\n"
+            
             quality_text += f"📏 Líneas Reales: {stats['total_lines']}\n"
             quality_text += f"💬 Comentarios: {stats.get('comments', 0)}\n"
             
@@ -291,7 +491,8 @@ class RSLocalCodeExplainerApp(ctk.CTk):
                 f.write("       Fin del Reporte - RS Local Code Explainer  \n")
                 f.write("==================================================\n")
             
-            os.startfile(filename) 
+            if self.config.get("auto_open_report", True):
+                os.startfile(filename) 
         except Exception as e:
             print(f"Error exportando: {e}")
 
