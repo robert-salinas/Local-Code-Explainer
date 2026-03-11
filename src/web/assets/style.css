@@ -1,0 +1,116 @@
+/* ============================================ 
+   RS | Design System - Final Optimized Edition 
+   ============================================ */ 
+
+:root { 
+    /* Colores Core - RS Orange */ 
+    --rs-orange: #FF7A3D; 
+    --rs-orange-light: #FFA566; 
+    --rs-orange-dark: #E86A2A; 
+    --rs-orange-glow: rgba(255, 122, 61, 0.4); 
+    
+    /* Paleta Dark (Default) - Profundidad Visual */ 
+    --rs-dark-primary: #2D3142;    /* Cards / Paneles */ 
+    --rs-dark-secondary: #1A1F2E;  /* Fondo Principal */ 
+    --rs-dark-tertiary: #0F1419;   /* Inputs / Profundidad */ 
+    
+    --rs-text-white: #FFFFFF; 
+    --rs-text-light: #F3F4F6; 
+    --rs-text-muted: #9CA3AF; 
+    
+    /* Semántica */ 
+    --rs-success: #10B981; 
+    --rs-error: #EF4444; 
+    --rs-warning: #F59E0B; 
+
+    /* Dinámica de Tema (Dark por defecto) */ 
+    --bg-main: var(--rs-dark-secondary); 
+    --bg-card: var(--rs-dark-primary); 
+    --text-main: var(--rs-text-white); 
+    --text-alt: var(--rs-text-muted); 
+    --border-rs: 1px solid rgba(255, 122, 61, 0.15); 
+    
+    /* Layout */ 
+    --radius-lg: 12px; 
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
+} 
+
+/* Ajuste Modo Claro (RS Light) - Sin "quemar" la vista */ 
+body.light-theme { 
+    --bg-main: #F9FAFB;      /* Gris seda muy suave */ 
+    --bg-card: #FFFFFF;      /* Blanco puro para destacar del fondo */ 
+    --text-main: #2D3142;    /* El azul oscuro pasa a ser el texto principal */ 
+    --text-alt: #6B7280;     /* Gris para descripciones */ 
+    --border-rs: 1px solid rgba(255, 122, 61, 0.25); 
+    --shadow-premium: 0 4px 12px rgba(0, 0, 0, 0.06); 
+} 
+
+/* Reset y Estilos Base */ 
+* { 
+    margin: 0; padding: 0; box-sizing: border-box; 
+    font-family: 'Inter', -apple-system, system-ui, sans-serif; 
+} 
+
+body { 
+    background-color: var(--bg-main) !important; 
+    color: var(--text-main) !important; 
+    transition: var(--transition); 
+} 
+
+/* Botón RS Premium */ 
+.rs-btn-primary { 
+    background: linear-gradient(135deg, var(--rs-orange), var(--rs-orange-dark)) !important; 
+    color: white !important; 
+    padding: 10px 20px; 
+    border-radius: var(--radius-lg); 
+    border: none !important; 
+    font-weight: 700; 
+    cursor: pointer; 
+    box-shadow: 0 4px 15px var(--rs-orange-glow); 
+    transition: var(--transition); 
+} 
+
+.rs-btn-primary:hover { 
+    transform: translateY(-2px); 
+    box-shadow: 0 8px 25px var(--rs-orange-glow); 
+    filter: brightness(1.1); 
+} 
+
+/* Navbar con Glassmorphism */ 
+.rs-navbar { 
+    background: rgba(26, 31, 46, 0.85); 
+    backdrop-filter: blur(12px); 
+    -webkit-backdrop-filter: blur(12px); 
+    border-bottom: 3px solid var(--rs-orange); 
+    padding: 1rem 2rem; 
+} 
+
+/* Inputs Compactos */ 
+.rs-input textarea, .rs-input input { 
+    background: var(--rs-dark-tertiary) !important; 
+    border: 1px solid var(--border-rs) !important; 
+    border-radius: 8px !important; 
+    padding: 8px 12px; 
+    color: white !important; 
+    transition: var(--transition); 
+} 
+
+.rs-input textarea:focus, .rs-input input:focus { 
+    border-color: var(--rs-orange) !important; 
+    outline: none !important; 
+}
+
+/* Gradio Specific Overrides to match RS Theme */
+.gradio-container {
+    background-color: var(--bg-main) !important;
+}
+
+.block {
+    background-color: var(--bg-card) !important;
+    border: var(--border-rs) !important;
+    border-radius: var(--radius-lg) !important;
+}
+
+label span {
+    color: var(--text-alt) !important;
+}
