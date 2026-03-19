@@ -1,0 +1,12 @@
+{
+    "max_function_lines": 30,
+    "penalty_long_function": 5,
+    "require_docstrings": true,
+    "penalty_missing_docstring": 2,
+    "banned_keywords": [
+        "password",
+        "api_key",
+        "secret_key"
+    ],
+    "penalty_banned_keyword": 20
+}

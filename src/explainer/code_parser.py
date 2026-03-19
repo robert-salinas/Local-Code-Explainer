@@ -112,6 +112,7 @@ class CodeParser:
                             "line_start": node.lineno,
                             "line_end": getattr(node, "end_lineno", node.lineno),
                             "args": [arg.arg for arg in node.args.args],
+                            "has_docstring": ast.get_docstring(node) is not None,
                         }
                     )
                 elif isinstance(node, ast.ClassDef):
@@ -125,6 +126,7 @@ class CodeParser:
                                 for n in node.body
                                 if isinstance(n, ast.FunctionDef)
                             ],
+                            "has_docstring": ast.get_docstring(node) is not None,
                         }
                     )
                 elif isinstance(node, (ast.Import, ast.ImportFrom)):
